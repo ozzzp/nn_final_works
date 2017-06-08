@@ -10,7 +10,7 @@ block = 0
 black = 1
 white = -1
 
-Cp = 0.5
+Cp = 1 / math.sqrt(2)
 
 
 def human_play(compos):
@@ -36,7 +36,7 @@ def random_play(compos):
     return action
 
 
-def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64):
+def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64, should_print=True):
     assert hasattr(default_play, '__call__')
 
     def simulation(compos):
@@ -46,25 +46,18 @@ def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64):
     cal_id = lambda x: (tuple(x.current.reshape(-1).tolist()), x.current_target)
 
     class mcts_node:
-        def __init__(self, compos, action=None, id=None):
+        def __init__(self, compos, id=None, action=None):
             """
             :param compos: composition
             """
             self.compos = copy.deepcopy(compos)
-            if action is not None:
-                self.visited = 1.0
+            if isinstance(action, tuple):
                 self.compos.add_pos(self.compos.current_target, action, should_print=False)
-                result = self.compos.check_state(should_print=False)
-                if result is None:
-                    self.expect = simulation(self.compos)
-                    self.doomed = None
-                else:
-                    self.expect = result
-                    self.doomed = result
-            else:
-                self.expect = 0.0
-                self.visited = 0.0
-                self.doomed = None
+                self.compos.check_state(should_print=False)
+            self.expect = 0.0
+            self.visited = 0.0
+            self.doomed = None
+            self.doomed_count = 0
             if id is None:
                 self.id = cal_id(self.compos)
             else:
@@ -72,18 +65,24 @@ def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64):
             self.father = set()
             self.child = {}
 
+        def _doomed_one_cut(self, node, repositary):
+            if self.doomed == node.compos.current_target:
+                node.doomed = self.doomed
+                return True
+            else:
+                node.doomed_count += 1
+                if node.doomed_count == len(node.child):
+                    child_dooms = {repositary[id].doomed for id in node.child}
+                    node.doomed = max(child_dooms) if node.compos.current_target == black else min(child_dooms)
+                    return True
+                else:
+                    return False
+
         def doomed_cut(self, repositary):
             for id in self.father:
                 node = repositary[id]
-                if self.doomed == node.compos.current_target:
-                    node = repositary[id]
-                    node.doomed = self.doomed
-                    node.compos.current_candidate = set()
-                    node.doomed_cut(repositary)
-                elif len(node.compos.current_candidate) == 0:
-                    child_dooms = {repositary[id].doomed for id in node.child}
-                    if None not in child_dooms:
-                        node.doomed = max(child_dooms) if node.compos.current_target == black else min(child_dooms)
+                if node.doomed is None:
+                    if self._doomed_one_cut(node, repositary):
                         node.doomed_cut(repositary)
 
         def backword(self, repositary, visited=None, expect=None):
@@ -103,29 +102,33 @@ def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64):
                 self.doomed_cut(repositary)
 
         def get_child(self, repositary):
-            try:
-                action = default_play(self.compos)
-            except:
-                return None
+            self.visited += 1.0
+            self.doomed = self.compos.final
+            if self.doomed is None:
+                self.expect += simulation(self.compos)
             else:
+                self.expect += self.doomed
+
+            doomed_dict = {}
+            for action in self.compos.current_candidate:
                 child = mcts_node(self.compos, action=action)
-                visited = child.visited
-                expect = child.expect
                 if child.id not in repositary:
                     repositary[child.id] = child
                 else:
                     child = repositary[child.id]
-                    child.expect += expert
-                    child.visited += visited
-                self.compos.current_candidate.remove(action)
+                    if child.doomed is not None:
+                        doomed_dict[child.id] = child
                 child.father.add(self.id)
                 self.child[child.id] = action
-                child.backword(repositary, visited=visited, expect=expect)
-                return child
+            for child in doomed_dict.values():
+                if child._doomed_one_cut(self, repositary):
+                    break
+            self.backword(repositary)
+            return
 
     mcts_node_repositary = {}
 
-    def tree_policy(node, target=black):
+    def UCT(node, target=black):
         """
         :param node:mcts_node
         :return: float
@@ -134,6 +137,15 @@ def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64):
         n_f = sum(mcts_node_repositary[id].visited for id in node.father) if len(node.father) != 0 else node.visited
         return expert / node.visited + 2 * Cp * math.sqrt(2 * math.log(n_f) / node.visited) \
             if node.visited != 0 else float('Inf')
+
+    def tree_policy(node, repositary):
+        while True:
+            if len(node.child) == 0:
+                break
+            else:
+                node = max((repositary[id] for id in node.child if repositary[id].doomed is None),
+                           key=functools.partial(UCT, target=node.compos.current_target))
+        return node
 
     def output_policy(node, target=black):
         node = node[0]
@@ -168,38 +180,50 @@ def mcts_search_gen(default_play=random_play, max_sec=3600, max_iter=3 ** 64):
         for i in range(max_iter):
             if (time.time() - start_time) >= max_sec or mcts_node_repositary[root_id].doomed is not None:
                 break
-            node = max((node for node in mcts_node_repositary.values() if len(node.compos.current_candidate) != 0),
-                       key=functools.partial(tree_policy, target=compos.current_target))
+            node = tree_policy(mcts_node_repositary[root_id], mcts_node_repositary)
             node.get_child(mcts_node_repositary)
 
         best_action = max(
             ((mcts_node_repositary[id], action) for id, action in mcts_node_repositary[root_id].child.items()),
             key=functools.partial(output_policy, target=compos.current_target))
-        doomed = mcts_node_repositary[root_id].doomed
-        if doomed == black:
-            doomed = 'X'
-        elif doomed == white:
-            doomed = 'O'
-        elif doomed is None:
-            doomed = '_'
-        elif doomed == block:
-            doomed = '='
-        print(best_action[1], i, doomed)
+        if should_print:
+            doomed = mcts_node_repositary[root_id].doomed
+            if doomed == black:
+                doomed = 'X'
+            elif doomed == white:
+                doomed = 'O'
+            elif doomed is None:
+                doomed = '_'
+            elif doomed == block:
+                doomed = '='
+            print("%d\t%s  %s  %d\t%s" % (len(np.where(compos.current != block)[0]) + 1,
+                                          'X' if compos.current_target == black else 'O',
+                                          translate_to_note(best_action[1]),
+                                          i,
+                                          doomed))
         return best_action[1]
 
     return mcts_play
 
 
+def translate_to_note(pos):
+    assert isinstance(pos, tuple) and len(pos) == 2
+    x = chr(pos[1] + ord('a'))
+    y = str(pos[0] + 1)
+    return x + y
+
+
 class composition(object):
     def __init__(self):
         self.current = np.ones([8, 8]) * block
-        self.current[3, 3] = black
-        self.current[4, 4] = black
-        self.current[3, 4] = white
-        self.current[4, 3] = white
+        self.current[3, 3] = white
+        self.current[4, 4] = white
+        self.current[3, 4] = black
+        self.current[4, 3] = black
         self.current_target = black
         self.edge = {(2, 2), (2, 3), (2, 4), (2, 5), (3, 5), (4, 5), (5, 5), (5, 4), (5, 3), (5, 2), (4, 2), (3, 2)}
         _, self.current_candidate = self.check_game_over(self.current_target)
+        self.final = None
 
     def check_state(self, should_print=False):
         next_target = black + white - self.current_target
@@ -207,20 +231,21 @@ class composition(object):
         if result == 0:
             self.current_target = next_target
             self.current_candidate = detail
-            return None
         elif result == 1:
             self.current_candidate = detail
-            return None
         elif result == 2:
             self.current_candidate = set()
             if should_print:
                 print(("Black" if detail == black else "white") + ' wins!')
-            return detail
+            self.final = detail
         elif result == 3:
             self.current_candidate = set()
             if should_print:
                 print("Draw!")
-            return 0.0
+            self.final = 0
+        else:
+            raise ValueError
+        return self.final
 
     def one_step(self, play, should_print=False):
         while True:
@@ -259,7 +284,6 @@ class composition(object):
             return None
 
     def add_pos(self, target, position, should_print=False):
-        assert target == black or target == white
         y, x = position
         if (y, x) in self.current_candidate:
             self.current[y, x] = target
@@ -352,35 +376,12 @@ def a_line(y, x, y_p, x_p):
 
 
 if __name__ == '__main__':
-    try:
-        expert = 0
-        for i in range(1, 101):
-            A = composition()
-            expert += A.run(black_play=random_play, white_play=mcts_search_gen(max_sec=4), should_print=False)
-            print(A)
-            print(expert / i)
-        A = expert / i
-
-        expert = 0
-        for i in range(1, 101):
-            A = composition()
-            expert += A.run(black_play=mcts_search_gen(max_sec=4), white_play=random_play, should_print=False)
-            print(A)
-            print(expert / i)
-        B = expert / i
-
-        expert = 0
-        for i in range(1, 101):
-            A = composition()
-            expert += A.run(black_play=mcts_search_gen(max_sec=4), white_play=mcts_search_gen(max_sec=4),
-                            should_print=False)
-            print(A)
-            print(expert / i)
-        C = expert / i
-    except:
+    expert = 0
+    for i in range(1, 101):
+        A = composition()
+        expert += A.run(black_play=mcts_search_gen(max_sec=4), white_play=mcts_search_gen(max_sec=4),
+                        should_print=False)
         print(A)
-        print(B)
-        print(C)
-    else:
-        print(A, B, C)
+        print(expert / i)
+    A = expert / i
     pass

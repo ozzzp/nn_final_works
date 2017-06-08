@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a11f1de2-2260-4a4c-a959-b76fa2f92e90" name="Default" comment="add Othello">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Othello.py" />
+    <list default="true" id="a11f1de2-2260-4a4c-a959-b76fa2f92e90" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Othello.py" afterPath="$PROJECT_DIR$/Othello.py" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/nn_final_works$Othello.coverage" NAME="Othello Coverage Results" MODIFIED="1496853071922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/nn_final_works$Othello.coverage" NAME="Othello Coverage Results" MODIFIED="1496928499737" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
@@ -23,17 +22,12 @@
       <file leaf-file-name="Othello.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Othello.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="381" column="14" lean-forward="false" selection-start-line="381" selection-start-column="14" selection-end-line="381" selection-end-column="14" />
-              <folding />
+            <state relative-caret-position="444">
+              <caret line="203" column="26" lean-forward="true" selection-start-line="203" selection-start-column="26" selection-end-line="203" selection-end-column="26" />
+              <folding>
+                <element signature="e#24#35#0" expanded="true" />
+              </folding>
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="nn_final_works20.pstat" pinned="false" current-in-tab="false">
-        <entry file="mock:///Users/ozzzp/Library/Caches/IntelliJIdea2017.1/snapshots/nn_final_works20.pstat">
-          <provider selected="true" editor-type-id="profiler-session-editor">
-            <state />
           </provider>
         </entry>
       </file>
@@ -48,17 +42,8 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>current</find>
-      <find>_check_rolling_over</find>
-      <find>self</find>
-      <find>x, y</find>
-      <find>check_game_over</find>
-      <find>add_step</find>
-      <find>comp</find>
-      <find>block_set</find>
       <find>tolist</find>
       <find>repositary</find>
-      <find>current_target</find>
       <find>black</find>
       <find>check_state</find>
       <find>current_target =</find>
@@ -67,13 +52,26 @@
       <find>.child</find>
       <find>run</find>
       <find>set([])</find>
-      <find>current_candidate</find>
       <find>a_line</find>
       <find>print</find>
       <find>print(</find>
       <find>''</find>
-      <find>print('</find>
       <find>clean</find>
+      <find>cum</find>
+      <find>current_target</find>
+      <find>current_candidate</find>
+      <find>mcts_node(</find>
+      <find>human</find>
+      <find>trans</find>
+      <find>print('</find>
+      <find>print(&quot;</find>
+      <find>doomed_count</find>
+      <find>exce</find>
+      <find>except</find>
+      <find>assert</find>
+      <find>mcts_pl</find>
+      <find>range</find>
+      <find>mcts_</find>
     </findStrings>
     <replaceStrings>
       <replace>comp</replace>
@@ -707,7 +705,7 @@
       <updated>1496728465329</updated>
       <workItem from="1496728467445" duration="20137000" />
       <workItem from="1496753971667" duration="31180000" />
-      <workItem from="1496834521091" duration="13901000" />
+      <workItem from="1496834521091" duration="41980000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <created>1496728643485</created>
@@ -716,11 +714,18 @@
       <option name="project" value="LOCAL" />
       <updated>1496728643486</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add Othello">
+      <created>1496853461592</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1496853461592</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65218000" />
+    <option name="totallyTimeSpent" value="93297000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -746,14 +751,14 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35753426" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.66849315" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.70678514" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5191781" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4671233" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.090410955" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -788,11 +793,11 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Othello.py</url>
-          <line>385</line>
+          <line>386</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Othello.py</url>
-          <line>268</line>
+          <line>292</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
@@ -803,20 +808,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="84" />
+      <option name="time" value="105" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="np.array([[1,2],[3,4]])" language="Python" />
-        <watch expression="[list(range(y+y_p, y+y_p*8, y_p)) if y_p != 0 else [y] * 8,                                         list(range(x+x_p, x+x_p*8, x_p)) if x_p != 0 else [x] * 8]" language="Python" />
-        <watch expression="search_list" />
-        <watch expression="y" language="Python" />
-        <watch expression="np.where(self.current_target == target)" language="Python" />
-        <watch expression="np.array(id[0]).reshape([8,8])" language="Python" />
-        <watch expression="[np.array(id[0]).reshape([8,8]) for id in mcts_node_repositary]" language="Python" />
-        <watch expression="(y, x) == (3, 5)" language="Python" />
-        <watch expression="action" language="Python" />
-        <watch expression="mcts_node_repositary[root_id]" language="Python" />
+        <watch expression="[repositary[i] for i in [repositary[id] for id in node.child][0].father]" language="Python" />
       </configuration>
     </watches-manager>
   </component>
@@ -825,7 +821,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#24#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -833,7 +831,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#24#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -860,11 +860,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.6.1/Frameworks/Python.framework/Versions/3.6/lib/python3.6/copy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-768">
+          <caret line="182" column="0" lean-forward="false" selection-start-line="182" selection-start-column="0" selection-end-line="182" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Othello.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="381" column="14" lean-forward="false" selection-start-line="381" selection-start-column="14" selection-end-line="381" selection-end-column="14" />
-          <folding />
+        <state relative-caret-position="444">
+          <caret line="203" column="26" lean-forward="true" selection-start-line="203" selection-start-column="26" selection-end-line="203" selection-end-column="26" />
+          <folding>
+            <element signature="e#24#35#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
