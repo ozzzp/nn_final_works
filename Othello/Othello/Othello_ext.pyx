@@ -4,9 +4,7 @@ cdef int block = 0
 cdef inline bint in_the_line(int y, int x):
     return 0 <= x < 8 and 0 <= y < 8
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef _check_rolling_over(int[:, :] current, int target, int y, int x, bint dryrun):
+def _check_rolling_over(int[:, :] current, int target, int y, int x, bint dryrun):
     cdef int y_p, x_p, idx, pos
     cdef bint should_changed
     cdef bint changed = False
@@ -46,9 +44,7 @@ cpdef _check_rolling_over(int[:, :] current, int target, int y, int x, bint dryr
 
     return changed
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-cpdef _generate_doomed_map(int[:, :] doomed_map, int[:, :] current):
+def _generate_doomed_map(int[:, :] doomed_map, int[:, :] current):
     cdef int y_p, y_s, y_e, y
     cdef int x_p, x_s, x_e, x
     cdef int target

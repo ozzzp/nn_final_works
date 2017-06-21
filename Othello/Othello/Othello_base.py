@@ -2,21 +2,17 @@
 import copy
 import functools
 import math
-import os
-import subprocess
 import time
 
 import numpy as np
 
-subprocess.call(['python setup.py build_ext --inplace'], shell=True, cwd=os.getcwd())
-
-from Othello.Othello_ext import _check_rolling_over, _generate_doomed_map
+from .Othello_ext import _check_rolling_over, _generate_doomed_map
 
 block = 0
 black = 1
 white = -1
 
-Cp = 0.5
+Cp = 1
 
 
 def human_play(compos):
@@ -52,26 +48,27 @@ def get_expect(node, target=black):
     return 0.5 + 0.5 * target * exp
 
 
-def UCT(node, target=black, repositary={}):
-    """
-    :param node:mcts_node
-    :return: float
-    """
-    node = node[0]
-    expect = get_expect(node, target=target)
-    n_f = sum(repositary[id].visited for id in node.father) if len(node.father) != 0 else node.visited
-    return expect / node.visited + 2 * Cp * math.sqrt(2 * math.log(n_f) / node.visited) \
-        if node.visited != 0 else float('Inf')
-
-
-def mcts_search_gen(default_play=random_play, tree_policy=UCT, prepare_tree_policy=None, max_sec=3600, max_iter=3 ** 64,
+def mcts_search_gen(default_play=random_play, tree_policy=None, prepare_tree_policy=None, simulation=None, max_sec=3600,
+                    max_iter=3 ** 64,
                     ext_log=None,
                     should_print=True):
     assert hasattr(default_play, '__call__')
 
-    def simulation(compos):
-        new_compos = copy.deepcopy(compos)
-        return new_compos.run(black_play=default_play, white_play=default_play, should_print=False)
+    if not hasattr(simulation, '__call__'):
+        def simulation(compos):
+            new_compos = copy.deepcopy(compos)
+            return new_compos.run(black_play=default_play, white_play=default_play, should_print=False)
+
+    if not hasattr(tree_policy, '__call__'):
+        def tree_policy(node, target=black, repositary={}):
+            """
+            :param node:mcts_node
+            :return: float
+            """
+            node = node[0]
+            n_f = sum(repositary[id].visited for id in node.father) if len(node.father) != 0 else node.visited
+            return get_expect(node, target=target) + Cp * math.sqrt(2 * math.log(n_f) / node.visited) \
+                if node.visited != 0 else float('Inf')
 
     cal_id = lambda x: (tuple(x.current.reshape(-1).tolist()), x.current_target)
 
@@ -225,12 +222,23 @@ def mcts_search_gen(default_play=random_play, tree_policy=UCT, prepare_tree_poli
                               key=lambda x: get_expect(x[0], target=compos.current_target))
         if isinstance(ext_log, dict):
             pred = - np.ones([8, 8], dtype=np.float)
+            pred_weight = np.zeros([8, 8], dtype=np.float)
             for id, action in root.child.items():
                 score = get_expect(mcts_node_repositary[id], target=compos.current_target)
                 pred[action] = max(min(score, 1), 0)
-            ext_log[root_id] = (root.compos, pred)
+                pred_weight[action] = mcts_node_repositary[id].visited if mcts_node_repositary[id].doomed is None \
+                    else max_iter
+            ext_log[root_id] = (root.compos, pred, pred_weight)
 
         if should_print:
+            '''
+            candidate = {translate_to_note(action):(mcts_node_repositary[id].visited,
+                                                    get_expect(mcts_node_repositary[id], target=compos.current_target))
+                         for id, action in root.child.items()}
+            next_candidate = {translate_to_note(action):(mcts_node_repositary[id].visited,
+                                                         get_expect(mcts_node_repositary[id], target=compos.current_target))
+                              for id, action in best_action[0].child.items()}
+            '''
             doomed = root.doomed
             if doomed == black:
                 doomed = 'X'
@@ -245,6 +253,8 @@ def mcts_search_gen(default_play=random_play, tree_policy=UCT, prepare_tree_poli
                                           translate_to_note(best_action[1]),
                                           i,
                                           doomed))
+            # print('\t', list(map(lambda x: (x[0], x[1][0], "%.3f" % x[1][1]), sorted(candidate.items(), key=lambda x: -x[1][1]))))
+            # print('\t', list(map(lambda x: (x[0], x[1][0], "%.3f" % x[1][1]), sorted(next_candidate.items(), key=lambda x: x[1][1]))))
         return best_action[1]
 
     return mcts_play

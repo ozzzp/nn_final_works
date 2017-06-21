@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ec45f7f1-67d5-43ff-b072-fab00c604cd1" name="ubunt-server" url="http://ubuntu-server.local">
+        <fileTransfer host="ubuntu-server.local" port="22" privateKey="$USER_HOME$/.ssh/ubuntu_server.pem" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="b119917c-e0dd-41af-a4a4-d2effdeb772f" name="ubuntu-server.remote" url="http://120.24.70.196">
+        <fileTransfer host="120.24.70.196" port="11235" privateKey="$USER_HOME$/.ssh/ubuntu_server.pem" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="11235" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
