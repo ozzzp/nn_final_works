@@ -9,10 +9,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+'''
 try:
     multiprocessing.set_start_method('spawn')
 except:
     pass
+'''
 from torch.autograd import Variable
 
 from .Othello_base import *
@@ -301,7 +303,7 @@ def process_data(log, cuda=False):
     return Variable(data), \
            Variable(mask), \
            Variable(target), \
-           Variable(weight)
+           weight
 
 
 def train_one_step(model, optimizer, log, cuda=False):

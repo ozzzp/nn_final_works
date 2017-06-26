@@ -37,25 +37,25 @@ if __name__ == '__main__':
         model.eval()
         default_policy = net_play_gen(model, cuda=args.cuda, gain=12.5)
         tree_policy, prepare_tree_policy = UCT_with_net_gen(model, lam=lam, cuda=args.cuda)
-        player = mcts_search_gen(  # default_play=default_policy,
-            tree_policy=tree_policy,
-            simulation=fixed_prb_simulation_gen(model, gain=12.5),
+        player = mcts_search_gen(default_play=default_policy,
+                                 tree_policy=tree_policy,
+                                 # simulation=expect_simulation_gen(model, gain=12.5),
             prepare_tree_policy=prepare_tree_policy,
-            max_sec=4,
-            should_print=True)
+                                 max_sec=4,
+                                 should_print=True)
         exp = 0
         for i in range(1, 1000):
             game = composition()
             mcts = mcts_search_gen(max_sec=4)
-            exp += game.run(black_play=player,
-                            white_play=mcts,
+            exp += game.run(black_play=default_policy,
+                            white_play=random_play,
                             should_print=False)
-            print(game)
+            # print(game)
             game = composition()
-            exp -= game.run(black_play=mcts,
-                            white_play=player,
+            exp -= game.run(black_play=random_play,
+                            white_play=default_policy,
                             should_print=False)
-            print(game)
+            # print(game)
             print(exp / 2 / i)
     else:
         raise ValueError
