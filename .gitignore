@@ -9,7 +9,6 @@ __pycache__/
 *.so
 *.c
 log
-vp
 # Distribution / packaging
 .Python
 env/

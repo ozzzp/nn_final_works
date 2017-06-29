@@ -1,11 +1,12 @@
-# RNN 预测时间序列
+# RL 解迷宫
 系统要求 python3, pip 要求：
 
-- pytorch
+- matplotlib
 - numpy
+- scipy
 
 运行步骤:
 ````
-cd rnn_model
+cd Maze
 python3 main.py
 ````

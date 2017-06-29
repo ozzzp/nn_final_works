@@ -8,7 +8,7 @@ parser.add_argument('--cuda', type=bool, default=False, metavar='True/False',
                     help='should or not to use GPU accelerate')
 parser.add_argument('--mode', type=str, default='Eval', metavar='Train/Eval',
                     help='select Train mode or Eval')
-parser.add_argument('--pertrain', type=str, default='V2', metavar='<model name>',
+parser.add_argument('--pertrain', type=str, default='V8', metavar='<model name>',
                     help='select the pertrain model')
 
 if __name__ == '__main__':
@@ -47,13 +47,13 @@ if __name__ == '__main__':
         for i in range(1, 1000):
             game = composition()
             mcts = mcts_search_gen(max_sec=4)
-            exp += game.run(black_play=default_policy,
-                            white_play=random_play,
-                            should_print=False)
+            exp += game.run(black_play=mcts,
+                            white_play=player,
+                            should_print=True)
             # print(game)
             game = composition()
-            exp -= game.run(black_play=random_play,
-                            white_play=default_policy,
+            exp -= game.run(black_play=player,
+                            white_play=mcts,
                             should_print=False)
             # print(game)
             print(exp / 2 / i)

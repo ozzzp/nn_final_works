@@ -1,13 +1,13 @@
 import argparse
 import time
 
+import data as data
+import model as M
+import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
-
-import rnn_model.data as data
-import rnn_model.model as model
 
 parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='./data/',
@@ -74,10 +74,6 @@ val_data = test_data
 # Build the model
 ###############################################################################
 
-model = model.RNNModel(args.model, args.nhid, args.nlayers, args.dropout, args.tied)
-if args.cuda:
-    model.cuda()
-
 criterion = lambda x1, x2: (F.pairwise_distance(x1, x2) ** 2).mean()
 
 
@@ -135,39 +131,52 @@ def train(lr):
         total_loss += loss.data
 
 
-# Loop over epochs.
-lr = args.lr
-best_val_loss = None
+val = []
 
-# At any point you can hit Ctrl + C to break out of training early.
-try:
-    for epoch in range(1, args.epochs + 1):
-        epoch_start_time = time.time()
-        train(lr)
-        val_loss = evaluate(val_data)
+for i in range(1000):
+
+    model = M.RNNModel(args.model, args.nhid, args.nlayers, args.dropout, args.tied)
+    if args.cuda:
+        model.cuda()
+    # Loop over epochs.
+    lr = args.lr
+    best_val_loss = None
+
+    # At any point you can hit Ctrl + C to break out of training early.
+    try:
+        for epoch in range(1, args.epochs + 1):
+            epoch_start_time = time.time()
+            train(lr)
+            val_loss = evaluate(val_data)
+            print('-' * 89)
+            print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f}% | '
+                  .format(epoch, (time.time() - epoch_start_time),
+                          val_loss * 100))
+            print('-' * 89)
+            # Save the model if the validation loss is the best we've seen so far.
+            if not best_val_loss or val_loss < best_val_loss:
+                with open(args.save, 'wb') as f:
+                    torch.save(model, f)
+                best_val_loss = val_loss
+            else:
+                lr /= 1.1
+    except KeyboardInterrupt:
         print('-' * 89)
-        print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f}% | '
-              .format(epoch, (time.time() - epoch_start_time),
-                      val_loss * 100))
-        print('-' * 89)
-        # Save the model if the validation loss is the best we've seen so far.
-        if not best_val_loss or val_loss < best_val_loss:
-            with open(args.save, 'wb') as f:
-                torch.save(model, f)
-            best_val_loss = val_loss
-        else:
-            lr /= 1.1
-except KeyboardInterrupt:
-    print('-' * 89)
-    print('Exiting from training early')
+        print('Exiting from training early')
 
-# Load the best saved model.
-with open(args.save, 'rb') as f:
-    model = torch.load(f)
+    # Load the best saved model.
+    with open(args.save, 'rb') as f:
+        model = torch.load(f)
 
-# Run on test data.
-test_loss = evaluate(test_data)
-print('=' * 89)
-print('| End of training | test loss {:5.2f}%'.format(
-    test_loss * 100))
-print('=' * 89)
+    # Run on test data.
+    test_loss = evaluate(test_data)
+    print('=' * 89)
+    print('| End of training | test loss {:5.2f}%'.format(
+        test_loss * 100))
+    print('=' * 89)
+
+    val.append(test_loss)
+    print(val)
+    if len(val) >= 2:
+        print(np.mean(val))
+        print(np.var(val, ddof=1))

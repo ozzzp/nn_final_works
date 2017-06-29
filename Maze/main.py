@@ -87,8 +87,6 @@ while True:
         plt.pause(0.01)
 
 print("Solved")
-ax.imshow(maze, cmap=plt.cm.gray_r)
-
 
 def print_path(start, maze, path):
     maze = copy.copy(maze)
